@@ -95,10 +95,13 @@ window.onload = function() {
     var findParentByClassName = function(element, targetClass){
         if (element) {
             var currentParent = element.parentElement;
-            while (currentParent.className != targetClass && currentParent.className !== null) {
-                currentParent = currentParent.parentElement;
+            if (currentParent == null) {
+                alert('No Parent Found')
+            } else if (currentParent.className == targetClass) {
+                return currentParent;
+            }else {
+                alert('No Parent found with that class name')
             }
-            return currentParent;
         }
     };
 
