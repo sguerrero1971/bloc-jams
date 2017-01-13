@@ -67,17 +67,19 @@ var createSongRow = function(songNumber, songName, songLength) {
         }
     };
 
-    var updatePlayerBarSong = function() {
-        $('.currently-playing .song-name').text(currentSongFromAlbum.title);
-        $('.currently-playing .artist-name').text(currentAlbum.artist);
-        $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + "-" + currentAlbum.artist);
-
-        $('.main-controls .play-pause').html(playerBarPauseButton);
-    };
 
     $row.find('.song-item-number').click(clickHandler);
     $row.hover(onHover, offHover);
     return $row;
+};
+
+
+var updatePlayerBarSong = function() {
+    $('.currently-playing .song-name').text(currentSongFromAlbum.title);
+    $('.currently-playing .artist-name').text(currentAlbum.artist);
+    $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + "-" + currentAlbum.artist);
+
+    $('.main-controls .play-pause').html(playerBarPauseButton);
 };
 
 var setSong = function(songNumber) {
@@ -124,8 +126,9 @@ var setCurrentAlbum = function(album) {
     $albumSongList.empty();
 
     for (var i = 0; i < album.songs.length; i++) {
-
-        var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
+        getSong = new buzz.sound(parseInt(album.songs[i-1]).audioUrl);
+        console.log(getSong);
+        var $newRow = createSongRow(i + 1, album.songs[i].title, buzz.toTimer(getSong.getDuration()));
         $albumSongList.append($newRow);
     }
 };
@@ -208,6 +211,12 @@ var togglePlayFromPlayBar = function() {
 
     var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
     var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+
+    if (currentSoundFile == null) {
+      setSong(1);
+      updateSeekBarWhileSongPlays();
+      updatePlayerBarSong();
+    };
 
     if (currentSoundFile.isPaused()) {
         currentSoundFile.play();
