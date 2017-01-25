@@ -7,7 +7,7 @@ var createSongRow = function(songNumber, songName, songLength) {
             '<tr class="album-view-song-item">'
             + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
             + '  <td class="song-item-title">' + songName + '</td>'
-            + '  <td class="song-item-duration">' + songLength + '</td>'
+            + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
             + '</tr>'
         ;
 
@@ -124,7 +124,6 @@ var setCurrentAlbum = function(album) {
     $albumSongList.empty();
 
     for (var i = 0; i < album.songs.length; i++) {
-
         var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
         $albumSongList.append($newRow);
     }
@@ -302,8 +301,14 @@ var setTotaltimeInPlayerBar = function () {
     return buzz.toTimer(currentSoundFile.getDuration());
 };
 
-var filterTimeCode = function () {
-    
+var filterTimeCode = function(timeInSeconds) {
+    var secNum = parseInt(timeInSeconds, 10);
+    var runningTimeHours = Math.floor(secNum /3600);
+    var runningTimeMinutes = Math.floor((secNum - (runningTimeHours * 3600)) / 60);
+    var runningTimeSeconds = secNum - (runningTimeHours * 3600) - (runningTimeMinutes * 60);
+    if (runningTimeSeconds < 10) {runningTimeSeconds = "0"+runningTimeSeconds;}
+    filteredTime = runningTimeMinutes+':'+runningTimeSeconds;
+    return filteredTime;
 };
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
